@@ -37,6 +37,7 @@ services:
     links:
       - mongo
     networks:
+      - frontend
       - backend
 volumes:
   mongodata:
