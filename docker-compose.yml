@@ -10,9 +10,6 @@ services:
       - SECRET=aslbljwerljwer
     depends_on:
       - mongo
-    ports:
-      - "3000:3000"
-      - "443:443"
     networks:
       - frontend
       - backend
