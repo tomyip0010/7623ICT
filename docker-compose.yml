@@ -1,21 +1,33 @@
 version: "3.9"
 services:
+  frontend:
+    container_name: frontend
+    image: frontend
+    build: ./frontend
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+      - backend
   mongo:
-    image: mongo
     container_name: mongo
+    image: mongo
+    build: ./mongodb
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=password
-    restart: unless-stopped
     ports:
       - "27017:27017"
     volumes:
-      - ./database/db:/data/db
-      - ./database/dev.archive:/Databases/dev.archive
-      - ./database/production:/Databases/production
+      - mongodata:/data/db
+    networks:
+      - backend
   mongo-express:
+    container_name: mongo-express
     image: mongo-express
-    container_name: mexpress
+    build: ./mongo-express
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password
@@ -24,6 +36,11 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
     links:
       - mongo
-    restart: unless-stopped
     ports:
       - "8081:8081"
+volumes:
+  mongodata:
+networks:
+  frontend:
+  backend:
+    internal: true
